@@ -1,5 +1,7 @@
 import requests, time, logging
 from bs4 import BeautifulSoup
+from telbot import TelegramBot
+import asyncio
 
 params = {
     'id': 'sff',
@@ -38,12 +40,22 @@ def get_new_posts(last_no):
         return res, int(res[-1][2])
     else:
         return [], last_no
-            
 
-if __name__ == '__main__':
+def make_message(res):
+    message = ''
+    for i, (title, link, no) in enumerate(res):
+        message += f'{i+1}. {title}\n{link}\n'
+    return message
+
+async def main():
     last_no = 1149160
+    bot = TelegramBot()
     while True:
         res, last_no = get_new_posts(last_no)
-        # if res:
-        #     telbot.send_message(res)
-        time.sleep(60)
+        print(res)
+        if res:
+            await bot.send_message(make_message(res))
+        await asyncio.sleep(60)
+
+if __name__ == "__main__":
+    asyncio.run(main())
