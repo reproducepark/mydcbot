@@ -1,4 +1,4 @@
-import requests
+import requests, time, logging
 from bs4 import BeautifulSoup
 
 params = {
@@ -17,7 +17,7 @@ def get_trs(params):
 
     # 웹 페이지 요청
     response = requests.get(baseurl, params=params, headers=headers)
-    print(response)
+
     # 요청이 성공했는지 확인
     if response.status_code == 200:
         # BeautifulSoup 객체 생성
@@ -33,11 +33,17 @@ def get_new_posts(last_no):
     for tr in trs:
         no = tr['data-no']
         if int(no) > last_no:
-            res.append((tr.find('a').text.strip(),"https://gall.dcinside.com"+tr.find('a', href=True)['href']))
-
-    print(res)
+            res.append((tr.find('a').text.strip(),"https://gall.dcinside.com"+tr.find('a', href=True)['href'], no))
+    if res:
+        return res, int(res[-1][2])
+    else:
+        return [], last_no
             
 
 if __name__ == '__main__':
-    last_no = 1149112
-    get_new_posts(last_no)
+    last_no = 1149160
+    while True:
+        res, last_no = get_new_posts(last_no)
+        # if res:
+        #     telbot.send_message(res)
+        time.sleep(60)
