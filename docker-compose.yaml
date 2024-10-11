@@ -1,0 +1,9 @@
+services:
+  mydcbot:
+    container_name: mydcbot-python
+    build: 
+      context: .
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    command: "nohup python scrap.py &"

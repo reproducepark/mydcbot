@@ -1,4 +1,4 @@
-import requests, time, logging
+import requests
 from bs4 import BeautifulSoup
 from telbot import TelegramBot
 import asyncio

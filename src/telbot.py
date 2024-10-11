@@ -1,5 +1,5 @@
 import os
-import telegram, asyncio
+import telegram
 from dotenv import load_dotenv
 
 class TelegramBot:
