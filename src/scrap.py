@@ -37,7 +37,7 @@ def get_new_posts(last_no):
         if int(no) > last_no:
             res.append((tr.find('a').text.strip(),"https://gall.dcinside.com"+tr.find('a', href=True)['href'], no))
     if res:
-        return res, int(res[-1][2])
+        return res, int(res[0][2])
     else:
         return [], last_no
 
@@ -52,7 +52,7 @@ async def main():
     bot = TelegramBot()
     while True:
         res, last_no = get_new_posts(last_no)
-        print(res)
+        print(res, last_no)
         if res:
             await bot.send_message(make_message(res))
         await asyncio.sleep(60)
