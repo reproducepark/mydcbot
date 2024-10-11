@@ -59,7 +59,7 @@ async def main():
         msg = make_message_each()
         if msg:
             await bot.send_message(msg)
-        await asyncio.sleep(45)
+        await asyncio.sleep(30)
 
 if __name__ == "__main__":
     asyncio.run(main())
