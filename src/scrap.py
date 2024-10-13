@@ -1,14 +1,19 @@
 import requests
 from bs4 import BeautifulSoup
 from telbot import TelegramBot
-import asyncio, time
+import asyncio, time, logging
 from params import params_list
+
+logging.basicConfig(filename='dcbot.log', level=logging.INFO, 
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 def get_trs(params):
     baseurl = 'https://gall.dcinside.com/mgallery/board/lists'
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
     }
+
+    logging.info(f"Requesting URL: {baseurl} with params: {params}")
 
     # 웹 페이지 요청
     response = requests.get(baseurl, params=params, headers=headers)
@@ -18,9 +23,10 @@ def get_trs(params):
         # BeautifulSoup 객체 생성
         soup = BeautifulSoup(response.text, 'html.parser')
         contents = soup.find_all('tr', class_='ub-content us-post')
+        logging.info(f"Successfully retrieved {len(contents)} posts")
         return contents
     else:
-        print(f'request failed with: {response.status_code}')
+        logging.error(f"Request failed with status code: {response.status_code}")
         return None
   
 def get_new_posts(params, last_no):
@@ -59,14 +65,21 @@ def make_message_each():
 async def main():
     bot = TelegramBot()
     while True:
-        msg = make_message_each()
-        if msg:
-            if len(msg) > 4096:
-                for i in range(0, len(msg), 4096):
-                    await bot.send_message(msg[i:i+4096])
-            else:
-                await bot.send_message(msg)
+        try:
+            msg = make_message_each()
+            if msg:
+                if len(msg) > 4096:
+                    for i in range(0, len(msg), 4096):
+                        await bot.send_message(msg[i:i+4096])
+                        logging.info(f"Sent message part {i//4096 + 1}")
+                else:
+                    await bot.send_message(msg)
+                    logging.info("Sent message")
+        except:
+            logging.error("Error occurred")
+            await bot.send_message("Error occurred while sending message")
         await asyncio.sleep(30)
 
 if __name__ == "__main__":
+    logging.info("Starting main program")
     asyncio.run(main())
