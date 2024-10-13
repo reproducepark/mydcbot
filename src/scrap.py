@@ -21,10 +21,13 @@ def get_trs(params):
         return contents
     else:
         print(f'request failed with: {response.status_code}')
+        return None
   
 def get_new_posts(params, last_no):
     res = []
     trs = get_trs(params)
+    if trs is None:
+        return [], last_no
     for tr in trs:
         no = tr['data-no']
         if int(no) > last_no:
@@ -58,7 +61,11 @@ async def main():
     while True:
         msg = make_message_each()
         if msg:
-            await bot.send_message(msg)
+            if len(msg) > 4096:
+                for i in range(0, len(msg), 4096):
+                    await bot.send_message(msg[i:i+4096])
+            else:
+                await bot.send_message(msg)
         await asyncio.sleep(30)
 
 if __name__ == "__main__":
