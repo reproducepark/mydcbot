@@ -16,7 +16,7 @@ def get_trs(params):
     logging.info(f"Requesting URL: {baseurl} with params: {params}")
 
     # 웹 페이지 요청
-    response = requests.get(baseurl, params=params, headers=headers, timeout=5)
+    response = requests.get(baseurl, params=params, headers=headers, timeout=30)
 
     # 요청이 성공했는지 확인
     if response.status_code == 200:
@@ -75,8 +75,8 @@ async def main():
                 else:
                     await bot.send_message(msg)
                     logging.info("Sent message")
-        except:
-            logging.error("Error occurred")
+        except Exception as e:
+            logging.error(f"Error occurred : {e}")
             # await bot.send_message("Error occurred while sending message")
         await asyncio.sleep(30)
 
