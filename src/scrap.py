@@ -77,7 +77,7 @@ async def main():
                     logging.info("Sent message")
         except:
             logging.error("Error occurred")
-            await bot.send_message("Error occurred while sending message")
+            # await bot.send_message("Error occurred while sending message")
         await asyncio.sleep(30)
 
 if __name__ == "__main__":
