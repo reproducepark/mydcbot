@@ -16,7 +16,7 @@ def get_trs(params):
     logging.info(f"Requesting URL: {baseurl} with params: {params}")
 
     # 웹 페이지 요청
-    response = requests.get(baseurl, params=params, headers=headers)
+    response = requests.get(baseurl, params=params, headers=headers, timeout=5)
 
     # 요청이 성공했는지 확인
     if response.status_code == 200:
