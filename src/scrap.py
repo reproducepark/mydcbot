@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from telbot import TelegramBot
 import asyncio, time, logging
 from params import params_list
+from fake_useragent import UserAgent
+ua = UserAgent(use_cache_server=True)
 
 logging.basicConfig(filename='dcbot.log', level=logging.INFO, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -10,7 +12,7 @@ logging.basicConfig(filename='dcbot.log', level=logging.INFO,
 def get_trs(params):
     baseurl = 'https://gall.dcinside.com/mgallery/board/lists'
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
+        'User-Agent': ua.random
     }
 
     logging.info(f"Requesting URL: {baseurl} with params: {params}")
@@ -78,7 +80,9 @@ async def main():
         except Exception as e:
             logging.error(f"Error occurred : {e}")
             # await bot.send_message("Error occurred while sending message")
-        await asyncio.sleep(30)
+        finally:
+            logging.info("Sleeping for 30 seconds")
+            await asyncio.sleep(30)
 
 if __name__ == "__main__":
     logging.info("Starting main program")
